@@ -1,25 +1,28 @@
-# RepoMind Python AI Service
+# RepoMind Python AI Service — Groq Edition
 
-FastAPI service called by the RepoMind Spring Boot backend.
+FastAPI service called by the RepoMind Spring Boot backend. It fetches GitHub source files and uses Groq-hosted LLM inference for repository code review, job-description matching and repository-grounded Q&A.
 
 ## Requirements
-Python 3.10+ and internet access to GitHub API for public repositories.
+- Python 3.10+
+- Groq API key from https://console.groq.com/keys
+- Internet access to GitHub and Groq
 
-## Windows PowerShell setup
-Run these commands inside this folder:
+## Windows PowerShell
+Run from this folder:
 ```powershell
 py -3 -m venv .venv
-.\\.venv\\Scripts\\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 Copy-Item .env.example .env
+```
+Edit `.env` and set `GROQ_API_KEY=your_real_key`. Default model is `llama-3.3-70b-versatile`; if unavailable on your account, set `GROQ_MODEL` to an active model ID from https://console.groq.com/docs/models.
+
+Start the service:
+```powershell
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 ```
-If activation is blocked:
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\\.venv\\Scripts\\Activate.ps1
-```
+If activation is blocked, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` then activate again.
 
 ## macOS/Linux
 ```bash
@@ -27,41 +30,35 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
+# Edit .env and set GROQ_API_KEY
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 ```
 
-## Test
-- Health: http://localhost:8001/health
-- Interactive API docs: http://localhost:8001/docs
+## Verify and test
+- Health: http://localhost:8001/health (`groq_configured` should be true)
+- Swagger: http://localhost:8001/docs
 
-Example requests (use a public repository):
+POST `/analyze` body:
 ```json
 {"repository_url":"https://github.com/psf/requests"}
 ```
-POST that body to `/analyze`.
-
-For `/matching/analyze`:
+POST `/matching/analyze` body:
 ```json
-{"repository_url":"https://github.com/psf/requests","job_description":"We need Python, REST API, Git, SQL and Docker experience."}
+{"repository_url":"https://github.com/psf/requests","job_description":"We need Python, HTTP client development, REST APIs, testing and Git experience."}
 ```
-For `/learning/ask`:
+POST `/learning/ask` body:
 ```json
-{"repository_url":"https://github.com/psf/requests","question":"How is the HTTP session implemented?"}
+{"repository_url":"https://github.com/psf/requests","question":"Explain how the Session class manages HTTP requests."}
 ```
 
-## Java connection
-Your Java backend already defaults to `http://localhost:8001`. Otherwise set:
-`PYTHON_SERVICE_URL=http://localhost:8001`
+## Java integration
+Java should call `http://localhost:8001`; retain `python.service.base-url=${PYTHON_SERVICE_URL:http://localhost:8001}`. Existing paths remain `/analyze`, `/matching/analyze`, `/learning/ask`. Top-level response fields remain compatible with the existing API contract.
 
-Endpoints:
-- POST `/analyze`
-- POST `/matching/analyze`
-- POST `/learning/ask`
-
-## Important limitations
-- Reads public GitHub files through GitHub REST API. For private repositories, add a token with read access as `GITHUB_TOKEN` in `.env`; never commit the token.
-- Does not execute repository code.
-- File-count and byte limits protect the service from huge repositories.
-- Quality score/security checks are heuristic starter checks, not a full audit.
-- Matching is keyword-based baseline, not a trained ML model or hiring decision.
-- Learning retrieves relevant excerpts; it does not yet call an LLM.
+## Notes and limitations
+- Repository content is treated as untrusted input; prompts tell the model not to follow embedded instructions.
+- The service does not execute repository code.
+- File count, file size and review-chunk limits bound the amount sent to the LLM.
+- Quality score is a heuristic indicator, not a certified code-quality/security score. Human review is required.
+- Matching is repository evidence comparison, not a measure of a person's proficiency or a hiring decision.
+- Public GitHub repositories work without a token. Private repositories require a `GITHUB_TOKEN` with suitable read access. Never commit `.env` or expose API keys in frontend code.
+- Groq usage is subject to your account's model availability, quotas and rate limits.
