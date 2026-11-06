@@ -1,0 +1,29 @@
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Java
+target/
+*.class
+.idea/
+*.iml
+
+# React / Node
+node_modules/
+dist/
+
+# IDE and operating system
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
