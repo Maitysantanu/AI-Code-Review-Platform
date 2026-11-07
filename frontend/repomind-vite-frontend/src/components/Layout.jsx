@@ -6,29 +6,32 @@ export default function Layout() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
+    const navItems = [
+        { name: "Dashboard", path: "/", icon: "⌂" },
+        { name: "Repository Analysis", path: "/repository-analysis", icon: "⌘" },
+        { name: "JD Matching", path: "/jd-matching", icon: "◎" },
+        { name: "Project Learning", path: "/project-learning", icon: "▤" }
+    ];
+
     const handleLogout = () => {
         logout();
         navigate("/login", { replace: true });
     };
 
-    const navItems = [
-        { name: "Dashboard", path: "/" },
-        { name: "Repository Analysis", path: "/repository-analysis" },
-        { name: "JD Matching", path: "/jd-matching" },
-        { name: "Project Learning", path: "/project-learning" }
-    ];
-
     return (
-        <div className="app-layout">
+        <div className="app-shell">
 
-            {/* Navbar */}
-            <header className="navbar">
-
-                <div className="navbar-brand">
+            {/* Sidebar */}
+            <aside className="sidebar">
+                <div className="brand">
                     <h2>RepoMind</h2>
                 </div>
 
-                <nav className="navbar-links">
+                <div className="workspace-label">
+                    WORKSPACE
+                </div>
+
+                <nav className="nav-list">
                     {navItems.map((item) => (
                         <NavLink
                             key={item.path}
@@ -38,32 +41,53 @@ export default function Layout() {
                                 isActive ? "nav-link active" : "nav-link"
                             }
                         >
-                            {item.name}
+                            <span className="nav-icon">{item.icon}</span>
+                            <span>{item.name}</span>
                         </NavLink>
                     ))}
                 </nav>
 
-                <div className="navbar-user">
+                <div className="sidebar-bottom">
+                    <div className="secure-card">
+                        <p className="secure-title">Secure Workspace</p>
+                        <p className="secure-description">
+                            Your repository analysis workspace.
+                        </p>
+                    </div>
 
-                    <span className="user-name">
-                        {user?.name || user?.email}
-                    </span>
+                    <div className="sidebar-user">
+                        <div className="user-info">
+                            <span className="user-name">
+                                {user?.name || user?.email || "User"}
+                            </span>
+                        </div>
 
-                    <button
-                        className="logout-button"
-                        onClick={handleLogout}
-                    >
-                        Logout
-                    </button>
-
+                        <button
+                            className="logout-button"
+                            onClick={handleLogout}
+                        >
+                            Logout
+                        </button>
+                    </div>
                 </div>
+            </aside>
 
-            </header>
+            {/* Main Content */}
+            <div className="main-column">
+                <header className="topbar">
+                    <div className="breadcrumb">
+                        RepoMind / Workspace
+                    </div>
+                </header>
 
-            {/* Main page content */}
-            <main className="main-content">
-                <Outlet />
-            </main>
+                <main className="main-content">
+                    <Outlet />
+                </main>
+
+                <footer className="footer">
+                    RepoMind — AI-Powered Code Intelligence Platform
+                </footer>
+            </div>
 
         </div>
     );
