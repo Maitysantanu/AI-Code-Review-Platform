@@ -1,4 +1,5 @@
-from fastapi import FastAPI,HTTPException
+
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from groq import APIConnectionError,APIStatusError,RateLimitError
 from app.models import RepositoryRequest,MatchingRequest,LearningRequest
@@ -9,6 +10,20 @@ from app.learning import answer_question
 from app.config import GROQ_API_KEY,GROQ_MODEL
 
 app=FastAPI(title='RepoMind AI Service',version='2.0.0',description='Groq-powered repository review, job matching and learning APIs.')
+@app.post("/debug/echo")
+async def debug_echo(request: Request):
+    raw_body = await request.body()
+
+    print("DEBUG CONTENT TYPE:", request.headers.get("content-type"))
+    print("DEBUG CONTENT LENGTH:", request.headers.get("content-length"))
+    print("DEBUG RAW BODY:", raw_body)
+
+    return {
+        "content_type": request.headers.get("content-type"),
+        "content_length": request.headers.get("content-length"),
+        "raw_body": raw_body.decode("utf-8", errors="replace"),
+        "body_length": len(raw_body)
+    }
 app.add_middleware(CORSMiddleware,allow_origins=['http://localhost:5173','http://localhost:5174','http://127.0.0.1:5173','http://127.0.0.1:5174'],allow_methods=['*'],allow_headers=['*'])
 
 def http_error(exc):
@@ -18,6 +33,7 @@ def http_error(exc):
     if isinstance(exc,RuntimeError) and 'GROQ_API_KEY' in str(exc): return HTTPException(503,str(exc))
     if isinstance(exc,ValueError): return HTTPException(400,str(exc))
     return HTTPException(502,f'AI service request failed: {str(exc)[:400]}')
+
 
 @app.get('/')
 def root(): return {'service':'repomind-python-ai-service','status':'UP','version':'2.0.0'}
@@ -35,3 +51,18 @@ async def matching(request:MatchingRequest):
 async def learning(request:LearningRequest):
     try: return await answer_question(await fetch_repository(request.repository_url),request.question)
     except Exception as e: raise http_error(e)
+
+@app.post("/debug/echo")
+async def debug_echo(request: Request):
+    raw_body = await request.body()
+
+    print("DEBUG CONTENT TYPE:", request.headers.get("content-type"))
+    print("DEBUG CONTENT LENGTH:", request.headers.get("content-length"))
+    print("DEBUG RAW BODY:", raw_body)
+
+    return {
+        "content_type": request.headers.get("content-type"),
+        "content_length": request.headers.get("content-length"),
+        "raw_body": raw_body.decode("utf-8", errors="replace"),
+        "body_length": len(raw_body)
+    }
