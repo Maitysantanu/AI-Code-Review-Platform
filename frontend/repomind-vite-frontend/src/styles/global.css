@@ -239,3 +239,190 @@
     justify-content: center;
     margin-right: 8px;
 }
+
+/* =========================================
+   REPOSITORY ANALYSIS - ENHANCED STYLES
+========================================= */
+
+/* Project overview */
+.technology-stack {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+.technology-stack h4,
+.architecture-summary h4 {
+    font: 700 12px Manrope, sans-serif;
+    color: var(--text);
+    margin: 0 0 15px;
+}
+
+.technology-group {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+    margin-bottom: 14px;
+}
+
+.technology-group > strong {
+    font-size: 10px;
+    color: var(--muted);
+    padding-top: 6px;
+}
+
+.technology-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.technology-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 9px;
+    border-radius: 6px;
+    background: #202b43;
+    border: 1px solid #303d59;
+    color: #b8c5dc;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.architecture-summary {
+    margin-top: 20px;
+    padding: 15px;
+    background: #0e1727;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+.architecture-summary p {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Improved finding evidence */
+.finding-evidence,
+.finding-suggestion {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #0d1625;
+    border: 1px solid #28364d;
+}
+
+.finding-evidence strong,
+.finding-suggestion strong {
+    display: block;
+    color: #b9c5d9;
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.finding-evidence p,
+.finding-suggestion p {
+    color: #91a0b7;
+    font-size: 10px;
+    line-height: 1.65;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.finding-suggestion {
+    border-left: 3px solid #61c5a4;
+}
+
+.finding-evidence {
+    border-left: 3px solid #8b7cff;
+}
+
+/* Severity indicators */
+.severity-dot.critical {
+    background: #ff525d;
+}
+
+.severity-label.critical {
+    background: #54252d;
+    color: #ff9ba1;
+}
+
+.severity-dot.info {
+    background: #7d9cbd;
+}
+
+/* Review and metrics */
+.analysis-summary {
+    align-items: stretch;
+}
+
+.analysis-summary > .panel {
+    min-width: 0;
+}
+
+.mini-metrics {
+    row-gap: 20px;
+}
+
+.mini-metrics div {
+    min-width: 0;
+}
+
+.mini-metrics strong {
+    overflow-wrap: anywhere;
+}
+
+/* Better report content */
+.panel ul {
+    padding-left: 20px;
+}
+
+.panel li {
+    color: #a1aec1;
+    font-size: 11px;
+    line-height: 1.7;
+    margin-bottom: 5px;
+}
+
+.panel h3 {
+    color: var(--text);
+}
+
+.panel > p {
+    color: #9ba9bd;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+    .technology-group {
+        grid-template-columns: 1fr;
+        gap: 7px;
+    }
+
+    .analysis-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .mini-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px 0;
+    }
+
+    .mini-metrics div:nth-child(2n) {
+        border-right: 0;
+    }
+
+    .finding-title-row {
+        align-items: flex-start;
+    }
+
+    .result-heading {
+        align-items: flex-start;
+        gap: 10px;
+    }
+}

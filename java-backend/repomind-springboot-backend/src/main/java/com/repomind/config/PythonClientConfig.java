@@ -26,7 +26,7 @@ public class PythonClientConfig {
         JdkClientHttpRequestFactory requestFactory =
                 new JdkClientHttpRequestFactory(httpClient);
 
-        requestFactory.setReadTimeout(Duration.ofSeconds(120));
+        requestFactory.setReadTimeout(Duration.ofSeconds(300));
 
         return builder
                 .baseUrl(baseUrl.trim().replaceAll("/+$", ""))
