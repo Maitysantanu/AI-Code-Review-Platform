@@ -164,6 +164,7 @@ export default function RepositoryAnalysis() {
     setRepositoryUrl,
     analysisResult,
     setAnalysisResult,
+    registerAnalyzedRepository,
   } = useApp();
 
   const [loading, setLoading] = useState(false);
@@ -189,6 +190,7 @@ export default function RepositoryAnalysis() {
       }
 
       setAnalysisResult(result);
+      registerAnalyzedRepository(url.trim());
     } catch (err) {
       console.error("Repository analysis failed:", err);
       setAnalysisResult(null);
